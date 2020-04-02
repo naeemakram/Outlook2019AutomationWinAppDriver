@@ -3,6 +3,7 @@ using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenQA.Selenium.Appium;
 using OpenQA.Selenium.Appium.Windows;
+using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
 
 namespace Outlook2019AutomationWinAppDriver
@@ -38,7 +39,7 @@ namespace Outlook2019AutomationWinAppDriver
         }
 
         [TestMethod]
-        public void OpenOutLook()
+        public void SearchAndMoveMailWithAttachment()
         {
             var homeTab = mSessionOutlook.FindElementByName("Home");
             mWaitOutlook.Until(x => homeTab.Displayed);
@@ -51,15 +52,194 @@ namespace Outlook2019AutomationWinAppDriver
             mWaitOutlook.Until(x => hasAttachmentsButton.Displayed);
             hasAttachmentsButton.Click();
 
-            //var messagesTable = mSessionOutlook.FindElementByName("Table View");
-            //messagesTable.Click();
+            System.Threading.Thread.Sleep(3000);
 
-            //var allDataItems = messagesTable.FindElementsByTagName("DataItem");
-            //Debug.WriteLine($"***** Total data items: {allDataItems.Count}");
-            //foreach(var mail in allDataItems)
-            //{
-            //    Debug.WriteLine($"***** {mail.Text} \r\n {mail.GetAttribute("Name")}");
-            //}
+            var allDataItems = mSessionOutlook.FindElementsByTagName("DataItem");
+            Debug.WriteLine($"***** Total data items: {allDataItems.Count}");
+
+            int i = 0;
+
+            string subjectToLookFor = "Subject Complicated option";
+            string destinationFolderName = "01Udemy";
+
+            WindowsElement mailItem = null;
+            string mailName = string.Empty;
+
+            foreach(var mail in allDataItems)
+            {
+                mailName = mail.GetAttribute("Name");
+
+
+                Debug.WriteLine($"*****{mailName}");
+                
+                if(mail.Displayed)
+                {
+                    //mail.Click();
+                    if(mailName.Contains(subjectToLookFor))
+                    {
+                        mailItem = mail;
+                        break;
+                    }
+                    if(i++ > 10)
+                    {
+                        break;// prevent very long searches
+                    }
+                }
+            }
+
+
+            WindowsElement targetFolder = null;
+
+            if(mailItem != null)
+            {
+                var allTreeNodes = mSessionOutlook.FindElementsByTagName("TreeItem");
+                Debug.WriteLine($"Tree nodes found: {allTreeNodes.Count}");
+
+                foreach(var t in allTreeNodes)
+                {
+                    Debug.WriteLine($"***** {t.GetAttribute("Name")}");
+                    if(t.GetAttribute("Name").Contains(destinationFolderName))
+                    {
+                        targetFolder = t;
+                        Debug.WriteLine($"Target folder found {targetFolder.ToString()}");
+                        break;
+                    }
+                }
+
+                if(targetFolder != null)
+                {
+
+                    Actions actDrag = new Actions(mSessionOutlook);
+
+                    int offsetX = 0, offsetY = 0;
+
+                    offsetX = targetFolder.Rect.X - mailItem.Rect.X + 5;
+
+                    offsetY = targetFolder.Rect.Y - mailItem.Rect.Y;
+                   
+
+                    if (offsetY < 0)// if target folder is above mail item
+                    {
+                        offsetY-= (targetFolder.Rect.Height / 2);
+                    }
+                    else // if target folder is below mail item
+                    {
+                        offsetY += (targetFolder.Rect.Height / 2);
+                    }
+
+
+                    Debug.WriteLine($"Mail item X: {mailItem.Rect.X}, Y: {mailItem.Rect.Y}");
+                    Debug.WriteLine($"Target folder X: {targetFolder.Rect.X}, Y: {targetFolder.Rect.Y}");
+                    Debug.Write($"Offset X: {offsetX} - X: {offsetY}");                    
+                    
+                    actDrag.MoveToElement(mailItem, mailItem.Rect.Width / 2, mailItem.Rect.Height / 2);                    
+                    actDrag.ClickAndHold(mailItem);
+                    actDrag.MoveByOffset(offsetX, offsetY);
+                    actDrag.Release(targetFolder);
+                    
+                    actDrag.Build();
+                    actDrag.Perform();
+                }
+            }
+
+        }
+
+
+        [TestMethod]
+        public void MoveASimpleMail()
+        {
+            var homeTab = mSessionOutlook.FindElementByName("Home");
+            mWaitOutlook.Until(x => homeTab.Displayed);
+            homeTab.Click();
+
+            System.Threading.Thread.Sleep(3000);
+
+            var allDataItems = mSessionOutlook.FindElementsByTagName("DataItem");
+            Debug.WriteLine($"***** Total data items: {allDataItems.Count}");
+
+            int i = 0;
+
+            string subjectToLookFor = "JazzCashAlert";
+            string destinationFolderName = "01Udemy";
+
+            WindowsElement mailItem = null;
+            string mailName = string.Empty;
+
+            foreach (var mail in allDataItems)
+            {
+                mailName = mail.GetAttribute("Name");
+
+
+                Debug.WriteLine($"*****{mailName}");
+
+                if (mail.Displayed)
+                {
+                    if (mailName.Contains(subjectToLookFor))
+                    {
+                        mailItem = mail;
+                        break;
+                    }
+                    if (i++ > 10)
+                    {
+                        break;// prevent very long searches
+                    }
+                }
+            }
+
+
+            WindowsElement targetFolder = null;
+
+            if (mailItem != null)
+            {
+                var allTreeNodes = mSessionOutlook.FindElementsByTagName("TreeItem");
+                Debug.WriteLine($"Tree nodes found: {allTreeNodes.Count}");
+
+                foreach (var t in allTreeNodes)
+                {
+                    Debug.WriteLine($"***** {t.GetAttribute("Name")}");
+                    if (t.GetAttribute("Name").Contains(destinationFolderName))
+                    {
+                        targetFolder = t;
+                        Debug.WriteLine($"Target folder found {targetFolder.ToString()}");
+                        break;
+                    }
+                }
+
+                if (targetFolder != null)
+                {
+
+                    Actions actDrag = new Actions(mSessionOutlook);
+
+                    int offsetX = 0, offsetY = 0;
+
+                    offsetX = targetFolder.Rect.X - mailItem.Rect.X + 5;
+
+                    offsetY = targetFolder.Rect.Y - mailItem.Rect.Y;
+
+
+                    if (offsetY < 0)// if target folder is above mail item
+                    {
+                        offsetY -= (targetFolder.Rect.Height / 2);
+                    }
+                    else // if target folder is below mail item
+                    {
+                        offsetY += (targetFolder.Rect.Height / 2);
+                    }
+
+
+                    Debug.WriteLine($"Mail item X: {mailItem.Rect.X}, Y: {mailItem.Rect.Y}");
+                    Debug.WriteLine($"Target folder X: {targetFolder.Rect.X}, Y: {targetFolder.Rect.Y}");
+                    Debug.Write($"Offset X: {offsetX} - X: {offsetY}");
+
+                    actDrag.MoveToElement(mailItem, mailItem.Rect.Width / 2, mailItem.Rect.Height / 2);
+                    actDrag.ClickAndHold(mailItem);
+                    actDrag.MoveByOffset(offsetX, offsetY);
+                    actDrag.Release(targetFolder);
+                    actDrag.Build();
+                    actDrag.Perform();
+                }
+            }
+
         }
     }
 }
