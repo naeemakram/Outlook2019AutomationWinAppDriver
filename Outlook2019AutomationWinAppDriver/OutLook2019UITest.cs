@@ -24,18 +24,20 @@ namespace Outlook2019AutomationWinAppDriver
             mTestContext = testContext;
             mOptionsOutlook = new AppiumOptions();
             mOptionsOutlook.AddAdditionalCapability("app", "Outlook");
-            mOptionsOutlook.AddAdditionalCapability("ms:waitForAppLaunch", "15");
+            mOptionsOutlook.AddAdditionalCapability("ms:waitForAppLaunch", Convert.ToString(Outlook2019AutomationWinAppDriver.Properties.Settings.Default.TimeToWaitAfterLaunch));
             // ms:waitForAppLaunch
 
-            mSessionOutlook = new WindowsDriver<WindowsElement>(new Uri("http://127.0.0.1:4723"), mOptionsOutlook);
+            mSessionOutlook = new WindowsDriver<WindowsElement>(new Uri($"http://{Outlook2019AutomationWinAppDriver.Properties.Settings.Default.WinAppDriverIP}:{Outlook2019AutomationWinAppDriver.Properties.Settings.Default.WinAppDriverPort}"), mOptionsOutlook);
 
             var optionsDesktop = new AppiumOptions();
             optionsDesktop.AddAdditionalCapability("app", "Root");
-            mSessionDesktop = new WindowsDriver<WindowsElement>(new Uri("http://127.0.0.1:4723"), optionsDesktop);
+            mSessionDesktop = new WindowsDriver<WindowsElement>(new Uri($"http://{Outlook2019AutomationWinAppDriver.Properties.Settings.Default.WinAppDriverIP}:{Outlook2019AutomationWinAppDriver.Properties.Settings.Default.WinAppDriverPort}"), optionsDesktop);
 
-            mWaitOutlook = new WebDriverWait(mSessionOutlook, TimeSpan.FromSeconds(5));
+            mWaitOutlook = new WebDriverWait(mSessionOutlook, TimeSpan.FromSeconds(Outlook2019AutomationWinAppDriver.Properties.Settings.Default.TimeForControLSpecificWait));
 
-            mSessionOutlook.Manage().Window.Maximize();
+            mSessionDesktop.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(Outlook2019AutomationWinAppDriver.Properties.Settings.Default.TimeForImplicitWait);
+
+                mSessionOutlook.Manage().Window.Maximize();
         }
 
         [TestMethod]
