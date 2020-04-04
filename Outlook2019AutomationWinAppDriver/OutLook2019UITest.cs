@@ -243,5 +243,40 @@ namespace Outlook2019AutomationWinAppDriver
             }
 
         }
+
+        [TestMethod]
+        public void SelectOtherAndSelectUnRead()
+        {
+            ///Button[@Name=\"Other\"]
+            var otherButton = mSessionOutlook.FindElementByXPath("//Button[@Name=\"Other\"]");
+            mWaitOutlook.Until(x => otherButton.Displayed);
+
+            otherButton.Click();
+
+
+            // /Button[@Name=\"Sort, arrange or filter messages\"][@ClassName=\"NetUISimpleButton\"]
+
+            var comboBy = mSessionOutlook.FindElementByXPath("//Button[@Name=\"Sort, arrange or filter messages\"][@ClassName=\"NetUISimpleButton\"]");
+            mWaitOutlook.Until(x => comboBy.Displayed);
+            comboBy.Click();
+
+            var menuItemUnread = mSessionOutlook.FindElementByXPath("//MenuItem[@Name=\"Unread Mail\"][@ClassName=\"NetUITWBtnCheckMenuItem\"]");
+            mWaitOutlook.Until(x => menuItemUnread.Displayed);
+            menuItemUnread.Click();
+
+        }
+
+        [TestMethod]
+        public void ToToSendReceiveAndUpdateFolder()
+        {
+            var sendReceiveTab = mSessionOutlook.FindElementByName("Send / Receive");
+            mWaitOutlook.Until(x => sendReceiveTab.Displayed);
+            sendReceiveTab.Click();
+
+            var btnUpdateFolder = mSessionOutlook.FindElementByXPath("//Button[@Name=\"Update Folder\"][@ClassName=\"NetUIRibbonButton\"]");
+            mWaitOutlook.Until(x => btnUpdateFolder.Displayed);
+            btnUpdateFolder.Click();
+        }
+
     }
 }
