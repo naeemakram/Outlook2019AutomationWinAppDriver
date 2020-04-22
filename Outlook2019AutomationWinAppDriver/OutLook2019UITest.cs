@@ -271,7 +271,7 @@ namespace Outlook2019AutomationWinAppDriver
         }
 
         [TestMethod]
-        public void ToToSendReceiveAndUpdateFolder()
+        public void GoToSendReceiveAndUpdateFolder()
         {
             var sendReceiveTab = mSessionOutlook.FindElementByName("Send / Receive");
             mWaitOutlook.Until(x => sendReceiveTab.Displayed);
@@ -282,5 +282,13 @@ namespace Outlook2019AutomationWinAppDriver
             btnUpdateFolder.Click();
         }
 
+        [TestMethod]
+        public void ClickCalendarIcon()
+        {
+            var calendarIcon = mSessionDesktop.FindElementByXPath("//Button[@Name=\"Calendar\"][@ClassName=\"Navigation Module\"]");
+            calendarIcon.Click();
+
+        }
     }
+
 }
