@@ -18,9 +18,10 @@ namespace Outlook2019AutomationWinAppDriver
 
         static WebDriverWait mWaitOutlook;
 
-// This code is written by Naeem Akram Malik and provided free of cost as community support for only learning purposes
-// In order to learn automated UI testing using WinAppDriver and C#, please visit the Udemy online course discount coupon link given below
-//https://www.udemy.com/course/appium-winappdriver-automation-testing/?couponCode=GITHUBAPRIL2020
+        // This code is written by Naeem Akram Malik and provided free of cost as community support for only learning purposes
+        // In order to learn automated UI testing using WinAppDriver and C#, please visit the Udemy online course discount coupon link given below
+        // revelant course materials can be found below
+        //https://www.udemy.com/course/appium-winappdriver-automation-testing/?couponCode=BC6F5B14381ED7902196
 
         [ClassInitialize]
         public static void Setup(TestContext testContext)
