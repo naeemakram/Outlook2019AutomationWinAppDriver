@@ -1,1 +1,2 @@
 Dummy information.
+New line in remote.
