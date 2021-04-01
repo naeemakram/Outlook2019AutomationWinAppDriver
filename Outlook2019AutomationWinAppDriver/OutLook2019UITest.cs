@@ -286,8 +286,34 @@ namespace Outlook2019AutomationWinAppDriver
         [TestMethod]
         public void ClickCalendarIcon()
         {
-            var calendarIcon = mSessionDesktop.FindElementByXPath("//Button[@Name=\"Calendar\"][@ClassName=\"Navigation Module\"]");
+            var calendarIcon = mSessionDesktop.FindElementByXPath("//*[@Name='Calendar'][@ClassName='Navigation Module']");
             calendarIcon.Click();
+
+        }
+
+        [TestMethod]
+        public void ClickNewButtonAndSaveButton()
+        {
+            var newButton = mSessionOutlook.FindElementByName("New Email");
+            newButton.Click();
+
+            System.Threading.Thread.Sleep(TimeSpan.FromSeconds(2));
+
+            mSessionDesktop.SwitchTo();
+
+            var winNewMail = mSessionDesktop.FindElementByXPath("//Window[contains(@Name, 'Untitled - Message (HTML)')]");
+
+            mWaitOutlook.Until(x => winNewMail.Displayed);
+
+            var mainWindow = mSessionOutlook.CurrentWindowHandle;
+           
+            winNewMail.Click();
+
+            var btnSave = mSessionDesktop.FindElementByXPath("//Button[@Name='Save'][@ClassName='NetUIRibbonButton']");
+
+            btnSave.Click();
+
+            mSessionOutlook.SwitchTo();
 
         }
     }
